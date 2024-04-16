@@ -3,17 +3,17 @@ package ru.practicum.ewm.server.stats;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import ru.practicum.ewm.dto.stats.StatsDtoOut;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-
-
+@Repository
 public interface StatsRepository extends JpaRepository<Stats, Long> {
 
     //Не уникальные посещения для всех uri
-    @Query("select new ru.practicum.stats.service.StatsDtoOut(s.app, s.uri, count(s)) from Stats s where s.timestamp >= :start and s.timestamp <= :end " +
+    @Query("select new ru.practicum.ewm.dto.stats.StatsDtoOut(s.app, s.uri, count(s)) from Stats s where s.timestamp >= :start and s.timestamp <= :end " +
             " group by s.app, s.uri ")
     List<StatsDtoOut> findAllHitsByDatesNotUniqueForAllUris(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
