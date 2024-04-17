@@ -30,15 +30,17 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<StatsDtoOut> getHits(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        List<StatsDtoOut> hits;
+        List<StatsDtoOut> hits = List.of();
         if (Optional.ofNullable(unique).orElse(false)) {
             if(uris == null) {
+                //return hits;
                 hits = statsRepository.findAllHitsByDatesUniqueForAllUris(start, end);
             } else {
                 hits = statsRepository.findAllHitsByDatesUniqueForListOfUris(start, end, uris);
             }
         } else {
             if(uris == null) {
+                //return hits;
                 hits = statsRepository.findAllHitsByDatesNotUniqueForAllUris(start, end);
             } else {
                 hits = statsRepository.findAllHitsByDatesNotUniqueForListOfUris(start, end, uris);
