@@ -34,7 +34,7 @@ public class StatsServiceImpl implements StatsService {
         log.debug("RUN getHits");
         List<StatsDtoOut> hits;
         if (Optional.ofNullable(unique).orElse(false)) {
-            if(uris == null) {
+            if (uris == null) {
                 log.debug(" | findAllHitsByDatesUniqueForAllUris");
                 hits = statsRepository.findAllHitsByDatesUniqueForAllUris(start, end);
             } else {
@@ -42,7 +42,7 @@ public class StatsServiceImpl implements StatsService {
                 hits = statsRepository.findAllHitsByDatesUniqueForListOfUris(start, end, uris);
             }
         } else {
-            if(uris == null) {
+            if (uris == null) {
                 log.debug(" | findAllHitsByDatesNotUniqueForAllUris");
                 hits = statsRepository.findAllHitsByDatesNotUniqueForAllUris(start, end);
             } else {
