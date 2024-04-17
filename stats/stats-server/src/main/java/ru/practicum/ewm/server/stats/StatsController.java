@@ -1,6 +1,5 @@
 package ru.practicum.ewm.server.stats;
 
-import com.sun.istack.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,8 +34,8 @@ public class StatsController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<List<StatsDtoOut>> getStats(@RequestParam(value = "start") @NotNull @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
-                                                      @RequestParam(value = "end") @NotNull @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
+    public ResponseEntity<List<StatsDtoOut>> getStats(@RequestParam(value = "start") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
+                                                      @RequestParam(value = "end") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
                                                       @RequestParam(value = "uris", required = false) List<String> uris,
                                                       @RequestParam(value = "unique", required = false) Boolean unique) {
         log.debug("GET /stats");

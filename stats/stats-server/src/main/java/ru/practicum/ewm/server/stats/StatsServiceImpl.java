@@ -22,6 +22,7 @@ public class StatsServiceImpl implements StatsService {
     @Override
     @Transactional
     public Integer saveHits(StatsDtoIn statsDtoIn) {
+        log.debug("RUN saveHits");
         Stats hit = StatsMapper.toStatsFromInDto(statsDtoIn);
         statsRepository.save(hit);
 
@@ -30,17 +31,22 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<StatsDtoOut> getHits(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        log.debug("RUN getHits");
         List<StatsDtoOut> hits;
         if (Optional.ofNullable(unique).orElse(false)) {
             if(uris == null) {
+                log.debug(" | findAllHitsByDatesUniqueForAllUris");
                 hits = statsRepository.findAllHitsByDatesUniqueForAllUris(start, end);
             } else {
+                log.debug(" | findAllHitsByDatesUniqueForListOfUris");
                 hits = statsRepository.findAllHitsByDatesUniqueForListOfUris(start, end, uris);
             }
         } else {
             if(uris == null) {
+                log.debug(" | findAllHitsByDatesNotUniqueForAllUris");
                 hits = statsRepository.findAllHitsByDatesNotUniqueForAllUris(start, end);
             } else {
+                log.debug(" | findAllHitsByDatesNotUniqueForListOfUris");
                 hits = statsRepository.findAllHitsByDatesNotUniqueForListOfUris(start, end, uris);
             }
         }
