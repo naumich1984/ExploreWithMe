@@ -1,9 +1,5 @@
 package ru.practicum.ewm.server.stats;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,8 +28,5 @@ public class Stats {
     private String ip;
 
     @Column(name = "timeEvent", nullable = false)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonProperty("timestamp")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime timestamp;
 }

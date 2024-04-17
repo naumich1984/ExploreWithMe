@@ -1,7 +1,6 @@
 package ru.practicum.ewm.server.stats;
 
 import ru.practicum.ewm.dto.stats.StatsDtoIn;
-import ru.practicum.ewm.server.stats.Stats;
 
 public class StatsMapper {
 
