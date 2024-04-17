@@ -27,8 +27,8 @@ services:
       - "8080:8080"
     depends_on:
       - ewm-db
-      - stats-server
       - stats-db
+      - stats-server
 
   ewm-db:
     image: postgres:14-alpine
@@ -36,7 +36,7 @@ services:
       - /var/lib/postgresql/data/
     container_name: ewm-db
     ports:
-      - "5432:5432"
+      - "6543:5432"
     environment:
       - POSTGRES_DB=ewm-db
       - POSTGRES_USER=admin
