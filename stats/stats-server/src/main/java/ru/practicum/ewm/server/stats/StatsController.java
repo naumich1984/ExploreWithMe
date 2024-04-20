@@ -23,14 +23,14 @@ public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
-    public ResponseEntity<Integer> addHit(@RequestBody @Valid StatsDtoIn statsDtoIn) {
+    public ResponseEntity<Stats> addHit(@RequestBody @Valid StatsDtoIn statsDtoIn) {
         log.debug("POST /hit");
         log.debug(" | app:{}", statsDtoIn.getApp());
         log.debug(" | ip:{}", statsDtoIn.getIp());
         log.debug(" | uri:{}", statsDtoIn.getUri());
         log.debug(" | timestamp:{}", statsDtoIn.getTimestamp());
 
-        return new ResponseEntity<Integer>(statsService.saveHits(statsDtoIn), HttpStatus.CREATED);
+        return new ResponseEntity<Stats>(statsService.saveHits(statsDtoIn), HttpStatus.CREATED);
     }
 
     @GetMapping("/stats")

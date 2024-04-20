@@ -1,6 +1,8 @@
 package ru.practicum.ewm.server.stats;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(of = {"id"})
 public class Stats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +31,6 @@ public class Stats {
     private String ip;
 
     @Column(name = "timeEvent", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime timestamp;
 }
