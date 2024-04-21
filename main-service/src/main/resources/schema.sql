@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS  events (
      title VARCHAR(120) NOT NULL,
      CONSTRAINT pk_event PRIMARY KEY (event_id),
      CONSTRAINT fk_events_to_categories FOREIGN KEY(category_id) REFERENCES categories(category_id),
-     CONSTRAINT fk_events_to_users FOREIGN KEY(user_id) REFERENCES users(user_id),
+     CONSTRAINT fk_events_to_users FOREIGN KEY(user_id) REFERENCES users(user_id) on delete cascade,
      CONSTRAINT fk_events_to_location FOREIGN KEY(location_id) REFERENCES location(location_id)
 );
 
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS  compilations_events (
      compilation_id BIGINT NOT NULL,
      event_id BIGINT NOT NULL,
      CONSTRAINT pk_compilation_event PRIMARY KEY (c_e_id),
-     CONSTRAINT fk_c_e_to_compilations FOREIGN KEY(compilation_id) REFERENCES compilations(compilation_id),
-     CONSTRAINT fk_c_e_to_events FOREIGN KEY(event_id) REFERENCES events(event_id)
+     CONSTRAINT fk_c_e_to_compilations FOREIGN KEY(compilation_id) REFERENCES compilations(compilation_id) on delete cascade,
+     CONSTRAINT fk_c_e_to_events FOREIGN KEY(event_id) REFERENCES events(event_id) on delete cascade
 );
 
 CREATE TABLE IF NOT EXISTS requests (
@@ -64,8 +64,8 @@ CREATE TABLE IF NOT EXISTS requests (
     user_id BIGINT NOT NULL,
     status VARCHAR(16),
     CONSTRAINT pk_request PRIMARY KEY (request_id),
-    CONSTRAINT fk_requests_to_events FOREIGN KEY(event_id) REFERENCES events(event_id),
-    CONSTRAINT fk_requests_to_users FOREIGN KEY(user_id) REFERENCES users(user_id)
+    CONSTRAINT fk_requests_to_events FOREIGN KEY(event_id) REFERENCES events(event_id) on delete cascade,
+    CONSTRAINT fk_requests_to_users FOREIGN KEY(user_id) REFERENCES users(user_id) on delete cascade
 );
 
 CREATE TABLE IF NOT EXISTS  comments (
@@ -76,6 +76,6 @@ CREATE TABLE IF NOT EXISTS  comments (
     event_id BIGINT NOT NULL,
     text VARCHAR(512) NOT NULL,
     CONSTRAINT pk_comment PRIMARY KEY (comment_id),
-    CONSTRAINT fk_comments_to_events FOREIGN KEY(event_id) REFERENCES events(event_id),
-    CONSTRAINT fk_comments_to_users FOREIGN KEY(user_id) REFERENCES users(user_id)
+    CONSTRAINT fk_comments_to_events FOREIGN KEY(event_id) REFERENCES events(event_id) on delete cascade,
+    CONSTRAINT fk_comments_to_users FOREIGN KEY(user_id) REFERENCES users(user_id) on delete cascade
 );
