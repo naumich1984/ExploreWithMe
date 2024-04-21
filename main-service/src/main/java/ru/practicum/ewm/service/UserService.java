@@ -1,10 +1,8 @@
 package ru.practicum.ewm.service;
 
 import ru.practicum.ewm.model.User;
-import ru.practicum.ewm.model.dto.UserDto;
 import ru.practicum.ewm.model.request.NewUserRequest;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 public interface UserService {

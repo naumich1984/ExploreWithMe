@@ -5,18 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.model.dto.*;
+import ru.practicum.ewm.model.dto.UserDto;
+import ru.practicum.ewm.model.dto.UserMapper;
 import ru.practicum.ewm.model.request.NewUserRequest;
-import ru.practicum.ewm.service.CategoryService;
 import ru.practicum.ewm.service.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static ru.practicum.ewm.model.dto.CategoryMapper.toCategoryDto;
 
 @RestController
 @RequiredArgsConstructor
