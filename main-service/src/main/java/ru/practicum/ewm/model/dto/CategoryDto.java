@@ -7,7 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"id", "name"})
+@Builder
 public class CategoryDto {
+
     private Long id;
     private String name;
 }

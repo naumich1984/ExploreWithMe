@@ -21,12 +21,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     @Transactional
-    public Integer saveHits(StatsDtoIn statsDtoIn) {
+    public void saveHits(StatsDtoIn statsDtoIn) {
         log.debug("RUN saveHits");
-        Stats hit = StatsMapper.toStatsFromInDto(statsDtoIn);
-        statsRepository.save(hit);
-
-        return 1;
+        statsRepository.save(StatsMapper.toStatsFromInDto(statsDtoIn));
     }
 
     @Override
