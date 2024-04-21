@@ -1,8 +1,8 @@
-package ru.practicum.ewm.model;
+package ru.practicum.ewm.model._enum;
 
 public enum RequestStatus {
     PENDING,
-    CANCEL,
+    REJECTED,
     CONFIRMED;
 
     static RequestStatus from(String status) {

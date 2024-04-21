@@ -1,9 +1,9 @@
-package ru.practicum.ewm.model;
+package ru.practicum.ewm.model._enum;
 
 public enum EventState {
-    WAITED,
+    PENDING,
     PUBLISHED,
-    REJECTED;
+    CANCELED;
 
     static EventState from(String state) {
         if (state == null) {
