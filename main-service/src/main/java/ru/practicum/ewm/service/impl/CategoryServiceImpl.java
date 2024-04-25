@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.utility.CommonPageRequest;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.model.Category;
-import ru.practicum.ewm.model.dto.CategoryMapper;
+import ru.practicum.ewm.model.dto.mapper.CategoryMapper;
 import ru.practicum.ewm.model.dto.NewCategoryDto;
 import ru.practicum.ewm.repository.CategoryRepository;
 import ru.practicum.ewm.service.CategoryService;

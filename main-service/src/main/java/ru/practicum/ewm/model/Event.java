@@ -1,6 +1,10 @@
 package ru.practicum.ewm.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ru.practicum.ewm.model._enum.EventState;
 
 import javax.persistence.*;
@@ -23,37 +27,40 @@ public class Event {
     @Column(name = "annotation")
     private String annotation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "createdOn")
+    @Column(name = "created_on")
+    @CreationTimestamp
     private LocalDateTime createdOn;
 
-    @Column(name = "eventDate")
+    @Column(name = "event_date")
     private LocalDateTime eventDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User initiator;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    private Location location;
+    @Column(name = "lat")
+    private Float lat;
+
+    @Column(name = "lon")
+    private Float lon;
 
     @Column(name = "paid")
     private Boolean paid;
 
-    @Column(name = "participantLimit")
+    @Column(name = "participant_limit")
     private Integer participantLimit;
 
-    @Column(name = "publishedOn")
+    @Column(name = "published_on")
     private LocalDateTime publishedOn;
 
-    @Column(name = "requestModeration")
+    @Column(name = "request_moderation")
     private Boolean requestModeration;
 
     @Column(name = "state")

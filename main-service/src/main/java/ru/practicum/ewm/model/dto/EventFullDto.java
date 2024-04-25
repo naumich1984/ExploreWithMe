@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = {"id", "title", "eventDate"})
 public class EventFullDto {
 
@@ -25,17 +26,13 @@ public class EventFullDto {
     private LocalDateTime eventDate;
     private Long id;
     private UserShortDto initiator;
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    public static class Location {
-        private Float lat;
-        private Float lon;
-    }
-
+    private LocationDto location;
     private Boolean paid;
     private Integer participantLimit;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    private LocalDateTime publishedOn;
+
     private Boolean requestModeration;
     private EventState state;
     private String title;

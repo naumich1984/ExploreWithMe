@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.ewm.model._enum.EventUpdateState;
+import ru.practicum.ewm.model.dto.LocationDto;
 
 import java.time.LocalDateTime;
 
@@ -22,15 +23,7 @@ public class UpdateEventUserRequest {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime eventDate;
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    public static class Location {
-        private Float lat;
-        private Float lon;
-    }
-
+    private LocationDto location;
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;

@@ -2,23 +2,26 @@ package ru.practicum.ewm.model.dto;
 
 import lombok.*;
 
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @EqualsAndHashCode
-public class EventShortDto {
+public class EventShortOutDto {
 
     private String annotation;
-    private CategoryDto category;
+    private Long categoryId;
+    private String categoryName;
     private LocalDateTime eventDate;
     private Long id;
-    private UserShortDto initiator;
+    private Long initiatorId;
+    private Long initiatorName;
     private Boolean paid;
     private String title;
-    private Long views;
     private Long confirmedRequests;
+
 }
+

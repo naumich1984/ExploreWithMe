@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.CategoryDto;
-import ru.practicum.ewm.model.dto.CategoryMapper;
+import ru.practicum.ewm.model.dto.mapper.CategoryMapper;
 import ru.practicum.ewm.model.dto.NewCategoryDto;
 import ru.practicum.ewm.service.CategoryService;
 
@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.ewm.model.dto.CategoryMapper.toCategoryDto;
+import static ru.practicum.ewm.model.dto.mapper.CategoryMapper.toCategoryDto;
 
 @RestController
 @RequiredArgsConstructor

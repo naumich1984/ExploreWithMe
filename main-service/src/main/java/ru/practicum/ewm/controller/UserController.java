@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.UserDto;
-import ru.practicum.ewm.model.dto.UserMapper;
+import ru.practicum.ewm.model.dto.mapper.UserMapper;
 import ru.practicum.ewm.model.request.NewUserRequest;
 import ru.practicum.ewm.service.UserService;
 
