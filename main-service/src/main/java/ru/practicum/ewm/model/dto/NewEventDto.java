@@ -26,7 +26,7 @@ public class NewEventDto {
     private String description;
 
     @NotNull
-    @MinEventDate
+    @MinEventDate(2)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;

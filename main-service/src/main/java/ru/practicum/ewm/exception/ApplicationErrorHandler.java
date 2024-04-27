@@ -3,6 +3,7 @@ package ru.practicum.ewm.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -59,5 +60,33 @@ public class ApplicationErrorHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(List.of(stackTrace), e.getMessage(),
                 "The required object was not found.", HttpStatus.NOT_FOUND, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.CONFLICT)
+    public ResponseEntity<ErrorResponse> handleValidationException(final ValidationException e) {
+        log.debug("Ошибка сервера:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        e.printStackTrace(new PrintStream(out, true, Charset.defaultCharset()));
+        String stackTrace = out.toString(Charset.defaultCharset());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(List.of(stackTrace), e.getMessage(),
+                "For the requested operation the conditions are not met.", HttpStatus.CONFLICT, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.CONFLICT)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(final HttpMessageNotReadableException e) {
+        log.debug("Ошибка сервера:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        e.printStackTrace(new PrintStream(out, true, Charset.defaultCharset()));
+        String stackTrace = out.toString(Charset.defaultCharset());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(List.of(stackTrace), e.getMessage(),
+                "For the requested operation the conditions are not met.", HttpStatus.CONFLICT, LocalDateTime.now()));
     }
 }

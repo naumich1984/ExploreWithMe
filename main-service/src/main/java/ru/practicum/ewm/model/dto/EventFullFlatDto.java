@@ -12,13 +12,11 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@EqualsAndHashCode(of = {"id", "title", "eventDate"})
-public class EventFullDto {
+public class EventFullFlatDto {
 
     private String annotation;
-    private CategoryDto category;
-    private Long confirmedRequests;
+    private Long categoryId;
+    private String categoryName;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime createdOn;
@@ -27,17 +25,18 @@ public class EventFullDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime eventDate;
     private Long id;
-    private UserShortDto initiator;
-    private LocationDto location;
+    private Long initiatorId;
+    private String initiatorName;
+    private Float lat;
+    private Float lon;
     private Boolean paid;
     private Integer participantLimit;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime publishedOn;
-
     private Boolean requestModeration;
     @Enumerated(EnumType.STRING)
     private EventState state;
     private String title;
-    private Long views;
+    private Long confirmedRequests;
 }
