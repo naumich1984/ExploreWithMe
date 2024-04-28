@@ -48,6 +48,20 @@ public class ApplicationErrorHandler {
                 "Incorrectly made request.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(final BadRequestException e) {
+        log.debug("Ошибка сервера:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        e.printStackTrace(new PrintStream(out, true, Charset.defaultCharset()));
+        String stackTrace = out.toString(Charset.defaultCharset());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(List.of(stackTrace), e.getMessage(),
+                "Incorrectly made request.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
+    }
+
     @ExceptionHandler
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> handleNotFoundException(final NotFoundException e) {

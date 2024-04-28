@@ -9,6 +9,7 @@ import ru.practicum.ewm.model.dto.*;
 import ru.practicum.ewm.model.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.model.request.UpdateEventUserRequest;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class EventMapper {
@@ -22,9 +23,9 @@ public class EventMapper {
                 .eventDate(newEventDto.getEventDate())
                 .lat(newEventDto.getLocation().getLat())
                 .lon(newEventDto.getLocation().getLon())
-                .paid(newEventDto.getPaid())
-                .participantLimit(newEventDto.getParticipantLimit())
-                .requestModeration(newEventDto.getRequestModeration())
+                .paid(Optional.ofNullable(newEventDto.getPaid()).orElse(false))
+                .participantLimit(Optional.ofNullable(newEventDto.getParticipantLimit()).orElse(0))
+                .requestModeration(Optional.ofNullable(newEventDto.getRequestModeration()).orElse(true))
                 .title(newEventDto.getTitle())
                 .initiator(User.builder().id(userId).build())
                 .createdOn(null)

@@ -30,11 +30,16 @@ public class StatsClient extends BaseClient {
         Map<String, Object> parameters = Map.of(
                 "start", start.format(formatter),
                 "end", end.format(formatter),
-                "uris", uris,
                 "unique", unique
         );
 
-        return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
+        StringBuilder path = new StringBuilder("/stats?start={start}&end={end}");
+        for(String uri : uris) {
+            path.append("&uris=").append(uri);
+        }
+        path.append("&unique={unique}");
+
+        return get(path.toString(), parameters);
     }
 
     public ResponseEntity<Object> addHits(StatsDtoIn statsDtoIn) {

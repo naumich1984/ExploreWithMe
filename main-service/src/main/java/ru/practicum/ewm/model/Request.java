@@ -1,6 +1,7 @@
 package ru.practicum.ewm.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.ewm.model._enum.RequestStatus;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class Request {
     private Long id;
 
     @Column(name = "created")
+    @CreationTimestamp
     private LocalDateTime created;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -33,8 +33,7 @@ import java.util.List;
 @Validated
 public class EventController {
 
-    @Autowired
-    private EventService eventService;
+    private final EventService eventService;
 
     @PostMapping("/users/{userId}/events")
     public ResponseEntity<EventFullDto> addEventPrivate(@RequestBody @Valid NewEventDto newEventDto, @PathVariable Long userId) {
@@ -135,7 +134,7 @@ public class EventController {
                                                                      @RequestParam(required = false) Boolean paid,
                                                                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                                                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-                                                                     @RequestParam(required = false) Boolean onlyAvailable,
+                                                                     @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
                                                                      @RequestParam(required = false) SortEnum sort,
                                                                      @RequestParam(required = false, defaultValue = "0") Integer from,
                                                                      @RequestParam(required = false, defaultValue = "10") Integer size,

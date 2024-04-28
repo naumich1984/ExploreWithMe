@@ -8,6 +8,7 @@ import ru.practicum.ewm.model._enum.RequestStatus;
 import ru.practicum.ewm.model.dto.ParticipationRequestDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
@@ -16,4 +17,13 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Query(" select r.created, r.event.id, r.id, r.status from Request r where r.id in :ids order by r.created ")
     List<ParticipationRequestDto> findAllRequestByIds(@Param("ids") List<Long> ids);
+
+    @Query(" select r.created, r.event.id, r.id, r.status from Request r where r.requester.id in :userId order by r.created ")
+    List<ParticipationRequestDto> findAllRequestByUserId(@Param("userId") Long userId);
+
+    @Query(" select count(r.id) from Request r where r.event.id = :eventId and r.status = 'CONFIRMED' ")
+    Long findCountConfirmedRequestByEventId(@Param("eventId") Long eventId);
+
+    @Query(" select r from Request r where r.event.id = :eventId and r.requester.id = :userId ")
+    Optional<Request> findByEventIdAndUserId(@Param("eventId") Long eventId, @Param("userId") Long userId);
 }

@@ -7,10 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import ru.practicum.ewm.client.stats.StatsClient;
 import ru.practicum.ewm.dto.EventRequestsStatDto;
 import ru.practicum.ewm.dto.stats.StatsDtoIn;
 import ru.practicum.ewm.dto.stats.StatsDtoOut;
+import ru.practicum.ewm.exception.BadRequestException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.exception.ValidationException;
 import ru.practicum.ewm.model.Category;
@@ -21,9 +23,7 @@ import ru.practicum.ewm.model._enum.EventUpdateState;
 import ru.practicum.ewm.model._enum.RequestStatus;
 import ru.practicum.ewm.model._enum.SortEnum;
 import ru.practicum.ewm.model.dto.*;
-import ru.practicum.ewm.model.dto.mapper.CategoryMapper;
 import ru.practicum.ewm.model.dto.mapper.EventMapper;
-import ru.practicum.ewm.model.dto.mapper.UserMapper;
 import ru.practicum.ewm.model.request.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.model.request.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.model.request.UpdateEventAdminRequest;
@@ -34,10 +34,11 @@ import ru.practicum.ewm.repository.RequestRepository;
 import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.service.EventService;
 import ru.practicum.ewm.utility.CommonPageRequest;
-import ru.practicum.ewm.client.stats.StatsClient;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,7 +88,7 @@ public class EventServiceImpl implements EventService {
         //List<StatsDtoOut> stats = objectMapper.convertValue(response.getBody(), new TypeReference<List<StatsDtoOut>>() {});
 
         return eventsPage.stream()
-                .map(event -> EventMapper.toEventShortDtoFromFlat(event))
+                .map(EventMapper::toEventShortDtoFromFlat)
                 .collect(Collectors.toList());
     }
 
@@ -113,15 +114,22 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
         User user = event.getInitiator();
         if (!user.getId().equals(userId)) {
-            new NotFoundException("User with id=" + userId + " was not found");
+            throw new NotFoundException("User with id=" + userId + " was not found");
         }
         if (event.getState().equals(EventState.PUBLISHED)) {
-            new ValidationException("Only pending or canceled events can be changed");
+            throw new ValidationException("Only pending or canceled events can be changed");
         }
 
-        if (updateEventUserRequest.getStateAction().equals(EventUpdateState.CANCEL_REVIEW)) {
+        if (Optional.ofNullable(updateEventUserRequest.getStateAction()).isPresent() &&
+                updateEventUserRequest.getStateAction().equals(EventUpdateState.CANCEL_REVIEW)) {
             event.setState(EventState.CANCELED);
         }
+
+        if (Optional.ofNullable(updateEventUserRequest.getStateAction()).isPresent() &&
+                updateEventUserRequest.getStateAction().equals(EventUpdateState.SEND_TO_REVIEW)) {
+            event.setState(EventState.PENDING);
+        }
+
         Long categoryId = event.getCategory().getId();
         String categoryName = event.getCategory().getName();
         Event result = eventRepository.save(EventMapper.toEventFromUpdateRequest(updateEventUserRequest, event));
@@ -135,10 +143,11 @@ public class EventServiceImpl implements EventService {
         log.debug("RUN getEventRequestsPrivate");
         Optional<List<ParticipationRequestDto>> eventRequests = eventRepository.findAllEventRequestsByInitiatorIdAndEventId(userId, eventId);
 
-        return eventRequests.orElse(Collections.EMPTY_LIST);
+        return eventRequests.orElse(List.of());
     }
 
     @Override
+    @Transactional
     public EventRequestStatusUpdateResult updateEventRequestsPrivate(EventRequestStatusUpdateRequest eventRequests,
                                                                     Long userId, Long eventId) {
         log.debug("RUN updateEventRequestsPrivate");
@@ -214,31 +223,45 @@ public class EventServiceImpl implements EventService {
                                                      LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
         log.debug("RUN getEventsByFilterAdmin");
         CommonPageRequest pageable = new CommonPageRequest(from, size);
-        List<EventState> eventStateList = states.stream().map(state -> EventState.valueOf(state)).collect(Collectors.toList());
+        List<EventState> eventStateList = null;
+        if (states != null) {
+            eventStateList = states.stream().map(EventState::valueOf).collect(Collectors.toList());
+        }
+
         List<EventFullFlatDto> eventFullDtos = eventRepository.findEventsByFilter(users, eventStateList, categories, rangeStart, rangeEnd, pageable);
 
         return eventFullDtos.stream().map(event -> EventMapper.toEventFullDtoFromFlat(event, 0L)).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public EventFullDto updateEventAdminPrivate(UpdateEventAdminRequest updateEventAdminRequest, Long eventId) {
         log.debug("RUN updateEventAdminPrivate");
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
-        if (event.getState().equals(EventState.PUBLISHED)) {
-            new ValidationException("Only pending or canceled events can be changed");
-        }
 
-        // событие можно отклонить, только если оно еще не опубликовано (Ожидается код ошибки 409)
-        if (updateEventAdminRequest.getStateAction().equals(EventUpdateState.CANCEL_REVIEW)
-                && event.getState().equals(EventState.PUBLISHED)) {
-            new ValidationException("Conflict");
-        }
+        boolean changeStatus = Optional.ofNullable(updateEventAdminRequest.getStateAction()).isPresent();
+        if (changeStatus) {
+            // событие можно отклонить, только если оно еще не опубликовано (Ожидается код ошибки 409)
+            if ( updateEventAdminRequest.getStateAction().equals(EventUpdateState.REJECT_EVENT)
+                    && event.getState().equals(EventState.PUBLISHED)) {
+                throw new ValidationException("Conflict");
+            }
 
-        // событие можно публиковать, только если оно в состоянии ожидания публикации (Ожидается код ошибки 409)
-        if (updateEventAdminRequest.getStateAction().equals(EventUpdateState.PUBLISH_EVENT)
-                && event.getState().equals(EventState.CANCELED)) {
-            new ValidationException("Conflict");
+            // событие можно публиковать, только если оно в состоянии ожидания публикации (Ожидается код ошибки 409)
+            if (updateEventAdminRequest.getStateAction().equals(EventUpdateState.PUBLISH_EVENT)
+                    && !event.getState().equals(EventState.PENDING)) {
+                throw new ValidationException("Conflict");
+            }
+
+            if (updateEventAdminRequest.getStateAction().equals(EventUpdateState.PUBLISH_EVENT)) {
+                event.setState(EventState.PUBLISHED);
+                event.setPublishedOn(LocalDateTime.now());
+            }
+
+            if (updateEventAdminRequest.getStateAction().equals(EventUpdateState.REJECT_EVENT)) {
+                event.setState(EventState.CANCELED);
+            }
         }
 
         Long categoryId = event.getCategory().getId();
@@ -257,11 +280,17 @@ public class EventServiceImpl implements EventService {
         log.debug("RUN getEventsByFilterPublic");
         statsClient.addHits(statsDtoIn);
 
+        if (rangeStart != null && rangeEnd != null) {
+            if (rangeEnd.isBefore(rangeStart)) {
+                throw new BadRequestException("rangeEnd must be after rangeStart");
+            }
+        }
+
         CommonPageRequest pageable = new CommonPageRequest(from, size);
-        List<EventShortFlatDto> events = eventRepository.findEventsByFilterPublic(text.toLowerCase(), categories, paid, rangeStart, rangeEnd, pageable);
+        List<EventShortFlatDto> events = eventRepository.findEventsByFilterPublic(text, categories, paid, rangeStart, rangeEnd, pageable);
         List<EventShortFlatDto> eventsFiltered;
         if(Optional.ofNullable(onlyAvailable).orElse(false)) {
-            eventsFiltered =events.stream()
+            eventsFiltered = events.stream()
                     .filter(e -> e.getParticipantLimit() > e.getConfirmedRequests() || e.getParticipantLimit() == 0)
                     .collect(Collectors.toList());
         } else {
@@ -269,11 +298,11 @@ public class EventServiceImpl implements EventService {
         }
 
         if (Optional.ofNullable(sort).orElse(SortEnum.EVENT_DATE).equals(SortEnum.EVENT_DATE)) {
-            return eventsFiltered.stream().map(e -> EventMapper.toEventShortDtoFromFlat(e))
+            return eventsFiltered.stream().map(EventMapper::toEventShortDtoFromFlat)
                     .sorted(Comparator.comparing(EventShortDto::getEventDate))
                     .collect(Collectors.toList());
         } else {
-            return eventsFiltered.stream().map(e -> EventMapper.toEventShortDtoFromFlat(e))
+            return eventsFiltered.stream().map(EventMapper::toEventShortDtoFromFlat)
                     .sorted(Comparator.comparing(EventShortDto::getViews))
                     .collect(Collectors.toList());
         }
@@ -284,11 +313,12 @@ public class EventServiceImpl implements EventService {
     public EventFullDto getEventsByIdPublic(Long eventId, StatsDtoIn statsDtoIn) {
         log.debug("RUN updateEventAdminPrivate");
         Long views = 0L;
-        statsClient.addHits(statsDtoIn);
 
         EventFullFlatDto eventFullFlatDto = eventRepository.findEventByIdWithRequestCount(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
 
+        statsDtoIn.setTimestamp(LocalDateTime.now());
+        statsClient.addHits(statsDtoIn);
         ResponseEntity<Object> response = statsClient.getHits(eventFullFlatDto.getCreatedOn(), LocalDateTime.now(),
                 List.of(statsDtoIn.getUri()), true);
         List<StatsDtoOut> stats = objectMapper.convertValue(response.getBody(), new TypeReference<List<StatsDtoOut>>() {});

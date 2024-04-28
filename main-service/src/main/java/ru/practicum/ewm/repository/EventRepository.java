@@ -86,8 +86,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " and (:users is null or e.initiator.id in :users ) " +
             " and (:states is null or e.state in :states) " +
             " and (:categories is null or e.category.id in :categories) " +
-            " and (:rangeStart is null or e.eventDate > :rangeStart) " +
-            " and (:rangeEnd is null or e.eventDate < :rangeEnd) " +
+            " and (:rangeStart is null or e.eventDate >= :rangeStart) " +
+            " and (:rangeEnd is null or e.eventDate <= :rangeEnd) " +
             " group by e.annotation, e.category.id, e.category.name, e.createdOn, e.description, e.eventDate, e.id, " +
             " e.initiator.id, e.initiator.name, " +
             " e.lat, e.lon, e.paid, e.participantLimit, e.publishedOn, e.requestModeration, e.state, e.title" +
@@ -105,7 +105,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " e.paid, e.title, e.participantLimit, count(r.id)) " +
             " from Request as r right join r.event as e " +
             " where 1 = 1 " +
-            " and (:text is null or lower(e.annotation) like lower(concat('%',:text,'%')) or lower(e.description) like lower(concat('%',:text,'%'))) " +
+            " and (:text is null or (lower(e.annotation) like lower(concat('%',:text,'%')) or lower(e.description) like lower(concat('%',:text,'%')))) " +
             " and (:categories is null or e.category.id in :categories) " +
             " and (:paid is null or e.paid in :paid ) " +
             " and (:rangeStart is null or e.eventDate > :rangeStart) " +
@@ -115,7 +115,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " group by e.annotation, e.category.id, e.category.name, e.eventDate, e.id, " +
             " e.initiator.id, e.initiator.name, e.paid, e.title, e.participantLimit " +
             " order by e.eventDate desc " )
-    List<EventShortFlatDto>findEventsByFilterPublic(@Param("text") @Nullable String text,
+    List<EventShortFlatDto> findEventsByFilterPublic(@Param("text") @Nullable String text,
                              @Param("categories") @Nullable List<Long> categories,
                              @Param("paid") @Nullable Boolean paid,
                              @Param("rangeStart") @Nullable LocalDateTime rangeStart,
