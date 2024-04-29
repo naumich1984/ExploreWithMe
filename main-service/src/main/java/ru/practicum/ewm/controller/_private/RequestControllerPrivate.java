@@ -1,4 +1,4 @@
-package ru.practicum.ewm.controller;
+package ru.practicum.ewm.controller._private;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,14 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.ParticipationRequestDto;
 import ru.practicum.ewm.service.RequestService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class RequestController {
+public class RequestControllerPrivate {
 
     private final RequestService requestService;
 
@@ -38,5 +37,16 @@ public class RequestController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(requestService.addRequestPrivate(userId, eventId));
+    }
+
+    @PatchMapping("/users/{userId}/requests/{requestId}/cancel")
+    public ResponseEntity<ParticipationRequestDto> cancelRequestPrivate(@PathVariable Long userId,
+                                                                     @PathVariable Long requestId) {
+        log.debug("PATCH /users/{userId}/requests/{requestId}/cancel");
+        log.debug(" | userId: {}", userId);
+        log.debug(" | requestId: {}", requestId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(requestService.cancelRequestPrivate(userId, requestId));
     }
 }

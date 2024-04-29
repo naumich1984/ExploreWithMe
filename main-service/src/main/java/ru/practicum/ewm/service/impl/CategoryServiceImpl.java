@@ -5,13 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.utility.CommonPageRequest;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.model.Category;
-import ru.practicum.ewm.model.dto.mapper.CategoryMapper;
 import ru.practicum.ewm.model.dto.NewCategoryDto;
+import ru.practicum.ewm.model.mapper.CategoryMapper;
 import ru.practicum.ewm.repository.CategoryRepository;
 import ru.practicum.ewm.service.CategoryService;
+import ru.practicum.ewm.utility.CommonPageRequest;
 
 import java.util.List;
 import java.util.Optional;

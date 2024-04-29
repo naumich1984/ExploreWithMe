@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.ewm.model._enum.RequestStatus;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,5 +20,6 @@ public class ParticipationRequestDto {
     private Long event;
     private Long id;
     private Long requester;
+    @Enumerated(EnumType.STRING)
     private RequestStatus status;
 }

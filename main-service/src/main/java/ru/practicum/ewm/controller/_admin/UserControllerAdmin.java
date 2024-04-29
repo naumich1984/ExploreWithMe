@@ -1,4 +1,4 @@
-package ru.practicum.ewm.controller;
+package ru.practicum.ewm.controller._admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.UserDto;
-import ru.practicum.ewm.model.dto.mapper.UserMapper;
+import ru.practicum.ewm.model.mapper.UserMapper;
 import ru.practicum.ewm.model.request.NewUserRequest;
 import ru.practicum.ewm.service.UserService;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class UserController {
+public class UserControllerAdmin {
 
     private final UserService userService;
 

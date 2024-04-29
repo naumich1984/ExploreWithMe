@@ -1,8 +1,6 @@
 package ru.practicum.ewm.service;
 
 import ru.practicum.ewm.dto.stats.StatsDtoIn;
-import ru.practicum.ewm.model.Category;
-import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model._enum.SortEnum;
 import ru.practicum.ewm.model.dto.EventFullDto;
 import ru.practicum.ewm.model.dto.EventShortDto;
@@ -18,7 +16,7 @@ import java.util.List;
 
 public interface EventService {
 
-    EventFullDto addEvent(NewEventDto newEventDto, Long userId);
+    EventFullDto addEventPrivate(NewEventDto newEventDto, Long userId);
 
     List<EventShortDto> getEventsPrivate(Long userId, Integer from, Integer size);
 
@@ -34,7 +32,7 @@ public interface EventService {
     List<EventFullDto> getEventsByFilterAdmin(List<Long> users, List<String> states, List<Long> categories,
                                               LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
-    EventFullDto updateEventAdminPrivate(UpdateEventAdminRequest updateEventAdminRequest, Long eventId);
+    EventFullDto updateEventAdmin(UpdateEventAdminRequest updateEventAdminRequest, Long eventId);
 
     List<EventShortDto> getEventsByFilterPublic(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
                                                 LocalDateTime rangeEnd, Boolean onlyAvailable, SortEnum sort,

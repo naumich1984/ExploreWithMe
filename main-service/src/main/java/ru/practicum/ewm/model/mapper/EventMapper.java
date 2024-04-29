@@ -1,15 +1,13 @@
-package ru.practicum.ewm.model.dto.mapper;
+package ru.practicum.ewm.model.mapper;
 
 import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.model._enum.EventState;
-import ru.practicum.ewm.model._enum.EventUpdateState;
 import ru.practicum.ewm.model.dto.*;
 import ru.practicum.ewm.model.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.model.request.UpdateEventUserRequest;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class EventMapper {

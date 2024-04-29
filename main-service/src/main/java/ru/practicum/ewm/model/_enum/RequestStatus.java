@@ -3,7 +3,8 @@ package ru.practicum.ewm.model._enum;
 public enum RequestStatus {
     PENDING,
     REJECTED,
-    CONFIRMED;
+    CONFIRMED,
+    CANCELED;
 
     static RequestStatus from(String status) {
         if (status == null) {

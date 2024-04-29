@@ -1,19 +1,15 @@
 package ru.practicum.ewm.repository;
 
 import io.micrometer.core.lang.Nullable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.practicum.ewm.dto.EventRequestsStatDto;
 import ru.practicum.ewm.model.Event;
-import ru.practicum.ewm.model.Request;
 import ru.practicum.ewm.model._enum.EventState;
 import ru.practicum.ewm.model.dto.EventFullFlatDto;
 import ru.practicum.ewm.model.dto.EventRequestsConfirmDto;
 import ru.practicum.ewm.model.dto.EventShortFlatDto;
-import ru.practicum.ewm.model.dto.ParticipationRequestDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,11 +45,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Optional<EventFullFlatDto> findEventByIdAndUserIdWithRequestCount(@Param("userId") Long userId,
                                                                       @Param("eventId") Long eventId);
 
-    @Query(" select r.created, r.event.id, r.requester.id, r.status " +
-            " from Request r " +
-            " where r.event.id = :eventId and r.event.initiator = :userId order by r.created desc ")
-    Optional<List<ParticipationRequestDto>> findAllEventRequestsByInitiatorIdAndEventId(@Param("userId") Long userId,
-                                                                                        @Param("eventId") Long eventId);
 
     @Query(" select r.id, r.status, r.created,  " +
             " r.requester.id, " +
@@ -65,14 +56,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                                                                  @Param("userId") Long userId,
                                                                                  @Param("eventId") Long eventId);
 
-    @Query(" select r.event.participantLimit, r.event.requestModeration, count(r.id) as cnt" +
-            " from Request r " +
-            " where r.id in :requestIds and r.event.id = :eventId " +
-            " and r.requester.id = :userId and r.status = 'PENDING' " +
-            " group by r.event.participantLimit, r.event.requestModeration " )
-    Optional<EventRequestsStatDto> findEventRequestsInfo(@Param("requestIds") List<Long> requestIds,
-                                                         @Param("userId") Long userId,
-                                                         @Param("eventId") Long eventId);
 
     @Query(" select new ru.practicum.ewm.model.dto.EventFullFlatDto(e.annotation, " +
             " e.category.id, e.category.name," +

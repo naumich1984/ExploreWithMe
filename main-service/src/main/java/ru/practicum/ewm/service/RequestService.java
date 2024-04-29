@@ -10,4 +10,6 @@ public interface RequestService {
     List<ParticipationRequestDto> getRequestsPrivate(Long userId);
 
     ParticipationRequestDto addRequestPrivate(Long userId, Long eventId);
+
+    ParticipationRequestDto cancelRequestPrivate(Long userId, Long requestId);
 }

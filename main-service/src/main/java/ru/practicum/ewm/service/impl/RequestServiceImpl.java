@@ -12,13 +12,12 @@ import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.model._enum.EventState;
 import ru.practicum.ewm.model._enum.RequestStatus;
 import ru.practicum.ewm.model.dto.ParticipationRequestDto;
-import ru.practicum.ewm.model.dto.mapper.RequestMapper;
+import ru.practicum.ewm.model.mapper.RequestMapper;
 import ru.practicum.ewm.repository.EventRepository;
 import ru.practicum.ewm.repository.RequestRepository;
 import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.service.RequestService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -48,17 +47,17 @@ public class RequestServiceImpl implements RequestService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found"));
         if (event.getInitiator().getId().equals(userId)) {
-            new ValidationException("Conflict");
+            throw new ValidationException("Conflict");
         }
         if (!event.getState().equals(EventState.PUBLISHED)) {
-            new ValidationException("Conflict");
+            throw new ValidationException("Conflict");
         }
         Long currentLimit = requestRepository.findCountConfirmedRequestByEventId(eventId);
-        if (currentLimit.equals(event.getParticipantLimit()) && event.getParticipantLimit() > 0) {
-            new ValidationException("Conflict");
+        if (currentLimit.equals((long) event.getParticipantLimit()) && event.getParticipantLimit() > 0) {
+            throw new ValidationException("Conflict");
         }
         if (requestRepository.findByEventIdAndUserId(eventId, userId).isPresent()) {
-            new ValidationException("Conflict");
+            throw new ValidationException("Conflict");
         }
 
         RequestStatus requestStatus = RequestStatus.PENDING;
@@ -72,5 +71,17 @@ public class RequestServiceImpl implements RequestService {
                 .build());
 
         return RequestMapper.toParticipationRequestDto(result);
+    }
+
+    @Override
+    public ParticipationRequestDto cancelRequestPrivate(Long userId, Long requestId) {
+        log.debug("RUN cancelRequestPrivate");
+        Request request = requestRepository.findByRequestIdAndUserId(requestId, userId)
+                .orElseThrow(() -> new NotFoundException("Request with id=" + requestId + " was not found"));
+
+        request.setStatus(RequestStatus.CANCELED);
+        requestRepository.save(request);
+
+        return RequestMapper.toParticipationRequestDto(request);
     }
 }

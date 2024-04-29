@@ -1,4 +1,4 @@
-package ru.practicum.ewm.controller;
+package ru.practicum.ewm.controller._admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,21 +6,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.CategoryDto;
-import ru.practicum.ewm.model.dto.mapper.CategoryMapper;
 import ru.practicum.ewm.model.dto.NewCategoryDto;
 import ru.practicum.ewm.service.CategoryService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static ru.practicum.ewm.model.dto.mapper.CategoryMapper.toCategoryDto;
+import static ru.practicum.ewm.model.mapper.CategoryMapper.toCategoryDto;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class CategoryController {
+public class CategoryControllerAdmin {
 
     private final CategoryService categoryService;
 
@@ -42,27 +39,6 @@ public class CategoryController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(toCategoryDto(categoryService.updateCategory(newCategoryDto, catId)));
-    }
-
-    @GetMapping("/categories/{catId}")
-    public ResponseEntity<CategoryDto> getCategory(@PathVariable @NotNull Long catId) {
-        log.debug("GET /categories/{catId}");
-        log.debug(" | catId: {}", catId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(toCategoryDto(categoryService.getCategory(catId)));
-    }
-
-    @GetMapping("/categories")
-    public ResponseEntity<List<CategoryDto>> getAllCategories(@RequestParam(required = false, defaultValue = "0") Integer from,
-                                                         @RequestParam(required = false, defaultValue = "10") Integer size) {
-        log.debug("GET /categories");
-        log.debug(" | from: {}", from);
-        log.debug(" | size: {}", size);
-
-        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getAllCategories(from, size)
-                .stream()
-                .map(CategoryMapper::toCategoryDto)
-                .collect(Collectors.toList()));
     }
 
     @DeleteMapping("/admin/categories/{catId}")
