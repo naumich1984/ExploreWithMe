@@ -34,7 +34,7 @@ public class StatsClient extends BaseClient {
         );
 
         StringBuilder path = new StringBuilder("/stats?start={start}&end={end}");
-        for(String uri : uris) {
+        for (String uri : uris) {
             path.append("&uris=").append(uri);
         }
         path.append("&unique={unique}");
