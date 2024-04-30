@@ -29,6 +29,9 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<StatsDtoOut> getHits(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         log.debug("RUN getHits");
+        if (start.isAfter(end)) {
+            throw new BadRequestException("Start date must be early than end date!");
+        }
         List<StatsDtoOut> hits;
         if (Optional.ofNullable(unique).orElse(false)) {
             if (uris == null) {
