@@ -1,4 +1,4 @@
-package ru.practicum.ewm.server.stats;
+package ru.practicum.ewm.server.stats.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.dto.stats.StatsDtoIn;
 import ru.practicum.ewm.dto.stats.StatsDtoOut;
+import ru.practicum.ewm.server.stats.model.StatsMapper;
+import ru.practicum.ewm.server.stats.repository.StatsRepository;
+import ru.practicum.ewm.server.stats.exception.BadRequestException;
 
 import java.time.LocalDateTime;
 import java.util.List;
