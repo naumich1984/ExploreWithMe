@@ -22,6 +22,6 @@ public class Compilation {
     private String title;
 
     @Column(name = "pinned")
-    private String pinned;
+    private Boolean pinned;
 }
 

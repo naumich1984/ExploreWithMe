@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ import ru.practicum.ewm.repository.RequestRepository;
 import ru.practicum.ewm.repository.UserRepository;
 import ru.practicum.ewm.service.EventService;
 import ru.practicum.ewm.utility.CommonPageRequest;
+import ru.practicum.ewm.utility.StatsInfo;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -49,8 +51,7 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
-    private final StatsClient statsClient;
-    private final ObjectMapper objectMapper;
+    private final StatsInfo statsInfo;
 
     @Override
     @Transactional
@@ -87,7 +88,7 @@ public class EventServiceImpl implements EventService {
         EventFullFlatDto eventFullFlatDto = eventRepository.findEventByIdAndUserIdWithRequestCount(userId, eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
 
-        Long views = getStats(eventFullFlatDto.getCreatedOn(), LocalDateTime.now(), List.of("/events/" + eventId), true);
+        Long views = statsInfo.getStats(eventFullFlatDto.getCreatedOn(), LocalDateTime.now(), List.of("/events/" + eventId), true);
 
         return EventMapper.toEventFullDtoFromFlat(eventFullFlatDto, views);
     }
@@ -122,7 +123,7 @@ public class EventServiceImpl implements EventService {
         String categoryName = event.getCategory().getName();
         Event result = eventRepository.save(EventMapper.toEventFromUpdateRequest(updateEventUserRequest, event));
         result.setCategory(Category.builder().id(categoryId).name(categoryName).build());
-        Long views = getStats(event.getCreatedOn(), LocalDateTime.now(), List.of("/events/" + eventId), true);
+        Long views = statsInfo.getStats(event.getCreatedOn(), LocalDateTime.now(), List.of("/events/" + eventId), true);
 
         return EventMapper.toEventFullDto(result, 0L, views);
     }
@@ -212,7 +213,7 @@ public class EventServiceImpl implements EventService {
         List<EventFullFlatDto> eventFullDtos = eventRepository.findEventsByFilter(users, eventStateList, categories, rangeStart, rangeEnd, pageable);
 
         return eventFullDtos.stream().map(event -> EventMapper.toEventFullDtoFromFlat(event,
-                getStats(event.getCreatedOn(), LocalDateTime.now(), List.of("/events/" + event.getId()), true)))
+                        statsInfo.getStats(event.getCreatedOn(), LocalDateTime.now(), List.of("/events/" + event.getId()), true)))
                 .collect(Collectors.toList());
     }
 
@@ -251,7 +252,7 @@ public class EventServiceImpl implements EventService {
         String categoryName = event.getCategory().getName();
         Event result = eventRepository.save(EventMapper.toEventFromUpdateAdminRequest(updateEventAdminRequest, event));
         result.setCategory(Category.builder().id(categoryId).name(categoryName).build());
-        Long views = getStats(event.getCreatedOn(), LocalDateTime.now(), List.of("/events/" + eventId), true);
+        Long views = statsInfo.getStats(event.getCreatedOn(), LocalDateTime.now(), List.of("/events/" + eventId), true);
 
         return EventMapper.toEventFullDto(result, 0L, views);
     }
@@ -270,7 +271,7 @@ public class EventServiceImpl implements EventService {
 
         CommonPageRequest pageable = new CommonPageRequest(from, size);
         List<EventShortFlatDto> events = eventRepository.findEventsByFilterPublic(text, categories, paid, rangeStart, rangeEnd, pageable);
-        statsClient.addHits(statsDtoIn);
+        statsInfo.addHits(statsDtoIn);
         List<EventShortFlatDto> eventsFiltered;
         if(Optional.ofNullable(onlyAvailable).orElse(false)) {
             eventsFiltered = events.stream()
@@ -296,19 +297,10 @@ public class EventServiceImpl implements EventService {
         log.debug("RUN updateEventAdminPrivate");
         EventFullFlatDto eventFullFlatDto = eventRepository.findEventByIdWithRequestCount(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
-        statsClient.addHits(statsDtoIn);
+        statsInfo.addHits(statsDtoIn);
 
         return EventMapper.toEventFullDtoFromFlat(eventFullFlatDto,
-                getStats(eventFullFlatDto.getCreatedOn(), LocalDateTime.now(), List.of(statsDtoIn.getUri()), true));
+                statsInfo.getStats(eventFullFlatDto.getCreatedOn(), LocalDateTime.now(), List.of(statsDtoIn.getUri()), true));
     }
 
-    private Long getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        ResponseEntity<Object> response = statsClient.getHits(start, end, uris, unique);
-        List<StatsDtoOut> stats = objectMapper.convertValue(response.getBody(), new TypeReference<List<StatsDtoOut>>() {});
-        if (!stats.isEmpty()) {
-            return stats.get(0).getHits();
-        }
-
-        return 0L;
-    }
 }

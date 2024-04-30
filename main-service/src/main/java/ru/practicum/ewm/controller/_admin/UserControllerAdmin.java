@@ -51,7 +51,7 @@ public class UserControllerAdmin {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable @NotNull Long userId) {
         log.debug("DELETE /admin/categories/{catId}");
-        log.debug(" | catId: {}", userId);
+        log.debug(" | userId: {}", userId);
 
         userService.deleteUser(userId);
     }

@@ -118,4 +118,17 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " e.lat, e.lon, e.paid, e.participantLimit, e.publishedOn, e.requestModeration, e.state, e.title" +
             " order by e.eventDate desc " )
     Optional<EventFullFlatDto> findEventByIdWithRequestCount(@Param("eventId") Long eventId);
+
+
+    @Query(" select new ru.practicum.ewm.model.dto.EventShortFlatDto(e.annotation, " +
+            " e.category.id, e.category.name, " +
+            " e.eventDate, e.id, " +
+            " e.initiator.id, e.initiator.name, " +
+            " e.paid, e.title, e.participantLimit, count(r.id)) " +
+            " from Request as r right join r.event as e " +
+            " where e.id in :ids " +
+            " group by e.annotation, e.category, e.eventDate, e.id, e.initiator, e.paid, e.title, e.participantLimit " +
+            " order by e.eventDate desc " )
+    Optional<List<EventShortFlatDto>> findAllEventsByIds(@Param("ids") List<Long> ids);
+
 }
