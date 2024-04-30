@@ -1,10 +1,7 @@
 package ru.practicum.ewm.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import ru.practicum.ewm.model._enum.EventState;
 
 import javax.persistence.*;

@@ -13,7 +13,6 @@ import ru.practicum.ewm.service.UserService;
 import ru.practicum.ewm.utility.CommonPageRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -25,14 +24,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User addUser(NewUserRequest newUserRequest) {
+    public User addUserAdmin(NewUserRequest newUserRequest) {
         log.debug("RUN addCategory");
 
         return userRepository.save(UserMapper.toUser(newUserRequest));
     }
 
     @Override
-    public List<User> getAllUsers(List<Long> ids, Integer from, Integer size) {
+    public List<User> getAllUsersAdmin(List<Long> ids, Integer from, Integer size) {
         log.debug("RUN getAllUsers");
         CommonPageRequest pageable = new CommonPageRequest(from, size);
         if (ids == null) {
@@ -46,17 +45,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(Long userId) {
+    public void deleteUserAdmin(Long userId) {
         log.debug("RUN deleteUser");
-        getUser(userId);
+        userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found"));
         userRepository.deleteById(userId);
-    }
-
-    private void getUser(Long userId) {
-        log.debug("RUN getUser");
-        Optional<User> userO = userRepository.findById(userId);
-        if (userO.isEmpty()) {
-            throw new NotFoundException("User with id=" + userId + " was not found");
-        }
     }
 }

@@ -4,7 +4,6 @@ import ru.practicum.ewm.model.dto.CompilationDto;
 import ru.practicum.ewm.model.dto.NewCompilationDto;
 import ru.practicum.ewm.model.request.UpdateCompilationRequest;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 public interface CompilationService {

@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventRequestsStatDto {
+
     Integer participantLimit;
     Boolean requestModeration;
 

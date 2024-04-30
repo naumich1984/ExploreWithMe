@@ -130,5 +130,4 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " group by e.annotation, e.category, e.eventDate, e.id, e.initiator, e.paid, e.title, e.participantLimit " +
             " order by e.eventDate desc " )
     Optional<List<EventShortFlatDto>> findAllEventsByIds(@Param("ids") List<Long> ids);
-
 }

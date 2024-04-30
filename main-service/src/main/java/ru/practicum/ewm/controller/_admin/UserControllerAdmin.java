@@ -23,17 +23,17 @@ public class UserControllerAdmin {
     private final UserService userService;
 
     @PostMapping("/admin/users")
-    public ResponseEntity<UserDto> addUser(@RequestBody @Valid NewUserRequest newUserRequest) {
+    public ResponseEntity<UserDto> addUserAdmin(@RequestBody @Valid NewUserRequest newUserRequest) {
         log.debug("POST /admin/users");
         log.debug(" | name: {}", newUserRequest.getName());
         log.debug(" | email: {}", newUserRequest.getEmail());
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(UserMapper.toUserDto(userService.addUser(newUserRequest)));
+                .body(UserMapper.toUserDto(userService.addUserAdmin(newUserRequest)));
     }
 
     @GetMapping("/admin/users")
-    public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam(required = false) List<Long> ids,
+    public ResponseEntity<List<UserDto>> getAllUsersAdmin(@RequestParam(required = false) List<Long> ids,
                                                      @RequestParam(required = false, defaultValue = "0") Integer from,
                                                      @RequestParam(required = false, defaultValue = "10") Integer size) {
         log.debug("GET /admin/users");
@@ -41,7 +41,7 @@ public class UserControllerAdmin {
         log.debug(" | from: {}", from);
         log.debug(" | size: {}", size);
 
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUsers(ids, from, size)
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUsersAdmin(ids, from, size)
                 .stream()
                 .map(UserMapper::toUserDto)
                 .collect(Collectors.toList()));
@@ -53,6 +53,6 @@ public class UserControllerAdmin {
         log.debug("DELETE /admin/categories/{catId}");
         log.debug(" | userId: {}", userId);
 
-        userService.deleteUser(userId);
+        userService.deleteUserAdmin(userId);
     }
 }

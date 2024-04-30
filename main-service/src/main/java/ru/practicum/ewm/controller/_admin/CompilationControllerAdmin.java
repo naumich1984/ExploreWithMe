@@ -13,8 +13,6 @@ import ru.practicum.ewm.service.CompilationService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Optional;
 
 @Validated
 @RestController
@@ -25,7 +23,7 @@ public class CompilationControllerAdmin {
     private final CompilationService compilationService;
 
     @PostMapping("/admin/compilations")
-    public ResponseEntity<CompilationDto> addCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
+    public ResponseEntity<CompilationDto> addCompilationAdmin(@Valid @RequestBody NewCompilationDto newCompilationDto) {
         log.debug("POST /admin/compilations");
         log.debug(" | events: {}", newCompilationDto.getEvents());
         log.debug(" | title: {}", newCompilationDto.getTitle());
@@ -36,7 +34,7 @@ public class CompilationControllerAdmin {
     }
 
     @PatchMapping("/admin/compilations/{compId}")
-    public ResponseEntity<CompilationDto> updateCompilation(@Valid @RequestBody UpdateCompilationRequest updateCompilationRequest,
+    public ResponseEntity<CompilationDto> updateCompilationAdmin(@Valid @RequestBody UpdateCompilationRequest updateCompilationRequest,
                                                             @PathVariable Long compId) {
         log.debug("PATCH /admin/compilations/{compId}");
         log.debug(" | compId: {}", compId);
@@ -50,7 +48,7 @@ public class CompilationControllerAdmin {
 
     @DeleteMapping("/admin/compilations/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCompilation(@PathVariable @NotNull Long compId) {
+    public void deleteCompilationAdmin(@PathVariable @NotNull Long compId) {
         log.debug("DELETE /admin/compilations/{compId}");
         log.debug(" | compId: {}", compId);
 

@@ -26,21 +26,21 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/categories/{catId}")
-    public ResponseEntity<CategoryDto> getCategory(@PathVariable @NotNull Long catId) {
+    public ResponseEntity<CategoryDto> getCategoryPublic(@PathVariable @NotNull Long catId) {
         log.debug("GET /categories/{catId}");
         log.debug(" | catId: {}", catId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(toCategoryDto(categoryService.getCategory(catId)));
+        return ResponseEntity.status(HttpStatus.OK).body(toCategoryDto(categoryService.getCategoryPublic(catId)));
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<List<CategoryDto>> getAllCategories(@RequestParam(required = false, defaultValue = "0") Integer from,
+    public ResponseEntity<List<CategoryDto>> getAllCategoriesPublic(@RequestParam(required = false, defaultValue = "0") Integer from,
                                                          @RequestParam(required = false, defaultValue = "10") Integer size) {
         log.debug("GET /categories");
         log.debug(" | from: {}", from);
         log.debug(" | size: {}", size);
 
-        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getAllCategories(from, size)
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getAllCategoriesPublic(from, size)
                 .stream()
                 .map(CategoryMapper::toCategoryDto)
                 .collect(Collectors.toList()));

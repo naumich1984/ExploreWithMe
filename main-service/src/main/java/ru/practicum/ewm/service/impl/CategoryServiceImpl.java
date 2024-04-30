@@ -2,7 +2,6 @@ package ru.practicum.ewm.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.NotFoundException;
@@ -14,7 +13,6 @@ import ru.practicum.ewm.service.CategoryService;
 import ru.practicum.ewm.utility.CommonPageRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -26,7 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category addCategory(NewCategoryDto newCategoryDto) {
+    public Category addCategoryAdmin(NewCategoryDto newCategoryDto) {
         log.debug("RUN addCategory");
 
         return categoryRepository.save(CategoryMapper.toCategory(newCategoryDto));
@@ -34,9 +32,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category updateCategory(NewCategoryDto newCategoryDto, Long catId) {
+    public Category updateCategoryAdmin(NewCategoryDto newCategoryDto, Long catId) {
         log.debug("RUN updateCategory");
-        getCategory(catId);
+        getCategoryPublic(catId);
         Category category = CategoryMapper.toCategory(newCategoryDto);
         category.setId(catId);
 
@@ -44,28 +42,24 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getCategory(Long catId) {
+    public Category getCategoryPublic(Long catId) {
         log.debug("RUN getCategory");
-        Optional<Category> categoryO = categoryRepository.findById(catId);
-        if (categoryO.isEmpty()) {
-            throw new NotFoundException("Category with id=" + catId + " was not found");
-        }
 
-        return categoryO.get();
+        return categoryRepository.findById(catId)
+                .orElseThrow(() -> new NotFoundException("Category with id=" + catId + " was not found"));
     }
 
     @Override
-    public List<Category> getAllCategories(Integer from, Integer size) {
+    public List<Category> getAllCategoriesPublic(Integer from, Integer size) {
         log.debug("RUN getAllCategories");
         CommonPageRequest pageable = new CommonPageRequest(from, size);
-        Page<Category> categories = categoryRepository.findAll(pageable);
 
-        return categories.getContent();
+        return categoryRepository.findAll(pageable).getContent();
     }
 
     @Override
     @Transactional
-    public void deleteCategory(Long catId) {
+    public void deleteCategoryAdmin(Long catId) {
         log.debug("RUN deleteCategory");
         categoryRepository.deleteById(catId);
     }

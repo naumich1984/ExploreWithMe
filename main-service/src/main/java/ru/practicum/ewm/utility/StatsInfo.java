@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -24,11 +23,21 @@ public class StatsInfo {
     private final ObjectMapper objectMapper;
     private final StatsClient statsClient;
 
+    public List<StatsDtoOut> getStatsList(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        ResponseEntity<Object> response = statsClient.getHits(start, end, uris, unique);
+        List<StatsDtoOut> statsDtoOutList = objectMapper.convertValue(response.getBody(), new TypeReference<>() {});
+        if (!statsDtoOutList.isEmpty()) {
+            return statsDtoOutList;
+        }
+
+        return List.of();
+    }
+
     public Long getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         ResponseEntity<Object> response = statsClient.getHits(start, end, uris, unique);
-        List<StatsDtoOut> stats = objectMapper.convertValue(response.getBody(), new TypeReference<List<StatsDtoOut>>() {});
-        if (!stats.isEmpty()) {
-            return stats.get(0).getHits();
+        List<StatsDtoOut> statsDtoOutList = objectMapper.convertValue(response.getBody(), new TypeReference<>() {});
+        if (!statsDtoOutList.isEmpty()) {
+            return statsDtoOutList.get(0).getHits();
         }
 
         return 0L;

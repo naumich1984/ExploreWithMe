@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.ewm.model.dto.ParticipationRequestDto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter

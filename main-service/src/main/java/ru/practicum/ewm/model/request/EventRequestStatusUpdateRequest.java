@@ -1,6 +1,9 @@
 package ru.practicum.ewm.model.request;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.ewm.model._enum.RequestStatus;
 
 import java.util.List;

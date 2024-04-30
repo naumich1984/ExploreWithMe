@@ -33,11 +33,13 @@ public class CompilationMapper {
         return new CompilationDto(compilation.getId(), compilation.getPinned(), compilation.getTitle(), events);
     }
 
-    public static Compilation toCompilationFromUpdateCompilationRequest(UpdateCompilationRequest updateCompilationRequest, Compilation compilation) {
+    public static Compilation toCompilationFromUpdateCompilationRequest(UpdateCompilationRequest updateCompilationRequest,
+                                                                        Compilation compilation) {
 
         return Compilation.builder()
                 .id(compilation.getId())
                 .title(Optional.ofNullable(updateCompilationRequest.getTitle()).orElse(compilation.getTitle()))
-                .pinned(Optional.ofNullable(updateCompilationRequest.getPinned()).orElse(compilation.getPinned())).build();
+                .pinned(Optional.ofNullable(updateCompilationRequest.getPinned()).orElse(compilation.getPinned()))
+                .build();
     }
 }

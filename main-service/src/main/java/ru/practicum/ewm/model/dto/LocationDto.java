@@ -2,7 +2,7 @@ package ru.practicum.ewm.model.dto;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 
 @Getter
 @Setter

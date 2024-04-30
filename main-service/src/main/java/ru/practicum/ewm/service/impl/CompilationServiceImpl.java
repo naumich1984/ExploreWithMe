@@ -77,10 +77,7 @@ public class CompilationServiceImpl implements CompilationService {
 
         List<Event> events = List.of();
         Optional<List<Long>> newEventIdsO = Optional.ofNullable(updateCompilationRequest.getEvents());
-        if (newEventIdsO.isEmpty()) {
-            //Обновление events не требуется
-            ;
-        } else {
+        if (newEventIdsO.isPresent()) {
             if (updateCompilationRequest.getEvents().isEmpty()) {
                 //Делаем подборку пустой
                 compilationEventRepository.deleteAllByCompilationId(compId);
@@ -108,7 +105,6 @@ public class CompilationServiceImpl implements CompilationService {
                         .collect(Collectors.toList()));
             }
         }
-
 
         return CompilationMapper.toCompilationDto(compilation, events.stream()
                 .map(event -> EventMapper.toEventShortDto(event,

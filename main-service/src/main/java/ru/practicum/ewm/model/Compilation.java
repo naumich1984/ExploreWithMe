@@ -24,4 +24,3 @@ public class Compilation {
     @Column(name = "pinned")
     private Boolean pinned;
 }
-
