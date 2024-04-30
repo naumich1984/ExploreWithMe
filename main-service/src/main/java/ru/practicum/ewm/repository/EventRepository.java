@@ -25,7 +25,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " e.paid, e.title, e.participantLimit, count(r.id)) " +
             " from Request as r right join r.event as e " +
             " where e.initiator.id = :userId " +
-            " group by e.annotation, e.category, e.eventDate, e.id, e.initiator, e.paid, e.title, e.participantLimit " +
+            " group by e.annotation, e.category.id, e.category.name, e.eventDate, e.id, " +
+            " e.initiator.id, e.initiator.name, e.paid, e.title, e.participantLimit " +
             " order by e.eventDate desc ")
     List<EventShortFlatDto> findAllEventsWithRequestsCountByInitiatorId(@Param("userId") long userId, Pageable pageable);
 
@@ -39,7 +40,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " e.state , e.title, count(r.id)) " +
             " from Request as r right join r.event as e " +
             " where  e.initiator.id = :userId and e.id = :eventId " +
-            " group by e.annotation, e.category, e.createdOn, e.description, e.eventDate, e.id, e.initiator," +
+            " group by e.annotation, e.category.id, e.category.name, e.createdOn, e.description, e.eventDate, e.id," +
+            " e.initiator.id, e.initiator.name, " +
             " e.lat, e.lon, e.paid, e.participantLimit, e.publishedOn, e.requestModeration, e.state, e.title" +
             " order by e.eventDate desc ")
     Optional<EventFullFlatDto> findEventByIdAndUserIdWithRequestCount(@Param("userId") Long userId,
@@ -69,8 +71,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " and (:users is null or e.initiator.id in :users ) " +
             " and (:states is null or e.state in :states) " +
             " and (:categories is null or e.category.id in :categories) " +
-            " and (:rangeStart is null or e.eventDate >= :rangeStart) " +
-            " and (:rangeEnd is null or e.eventDate <= :rangeEnd) " +
+            " and (cast(:rangeStart as timestamp) is null or e.eventDate >= :rangeStart) " +
+            " and (cast(:rangeEnd as timestamp) is null or e.eventDate <= :rangeEnd) " +
             " group by e.annotation, e.category.id, e.category.name, e.createdOn, e.description, e.eventDate, e.id, " +
             " e.initiator.id, e.initiator.name, " +
             " e.lat, e.lon, e.paid, e.participantLimit, e.publishedOn, e.requestModeration, e.state, e.title" +
@@ -91,9 +93,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " and (:text is null or (lower(e.annotation) like lower(concat('%',:text,'%')) or lower(e.description) like lower(concat('%',:text,'%')))) " +
             " and (:categories is null or e.category.id in :categories) " +
             " and (:paid is null or e.paid in :paid ) " +
-            " and (:rangeStart is null or e.eventDate > :rangeStart) " +
-            " and (:rangeEnd is null or e.eventDate < :rangeEnd) " +
-            " and ((:rangeEnd is null and :rangeStart is null) or e.eventDate > now()) " +
+            " and (cast(:rangeStart as timestamp) is null or e.eventDate > :rangeStart) " +
+            " and (cast(:rangeEnd as timestamp) is null or e.eventDate < :rangeEnd) " +
+            " and ((cast(:rangeEnd as timestamp ) is null and cast(:rangeStart as timestamp ) is null) or e.eventDate > now()) " +
             " and e.state = 'PUBLISHED' " +
             " group by e.annotation, e.category.id, e.category.name, e.eventDate, e.id, " +
             " e.initiator.id, e.initiator.name, e.paid, e.title, e.participantLimit " +
@@ -114,7 +116,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " e.state , e.title, count(r.id)) " +
             " from Request as r right join r.event as e " +
             " where e.id = :eventId and e.state = 'PUBLISHED' " +
-            " group by e.annotation, e.category, e.createdOn, e.description, e.eventDate, e.id, e.initiator," +
+            " group by e.annotation, e.category.id, e.category.name, e.createdOn, e.description, " +
+            " e.eventDate, e.id, e.initiator.id, e.initiator.name, " +
             " e.lat, e.lon, e.paid, e.participantLimit, e.publishedOn, e.requestModeration, e.state, e.title" +
             " order by e.eventDate desc ")
     Optional<EventFullFlatDto> findEventByIdWithRequestCount(@Param("eventId") Long eventId);
@@ -127,7 +130,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " e.paid, e.title, e.participantLimit, count(r.id)) " +
             " from Request as r right join r.event as e " +
             " where e.id in :ids " +
-            " group by e.annotation, e.category, e.eventDate, e.id, e.initiator, e.paid, e.title, e.participantLimit " +
+            " group by e.annotation, e.category.id, e.category.name, e.eventDate, e.id, " +
+            " e.initiator.id, e.initiator.name, e.paid, e.title, e.participantLimit " +
             " order by e.eventDate desc ")
     Optional<List<EventShortFlatDto>> findAllEventsByIds(@Param("ids") List<Long> ids);
 }

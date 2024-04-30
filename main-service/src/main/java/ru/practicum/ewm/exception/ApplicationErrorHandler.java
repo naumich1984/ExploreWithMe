@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,9 +30,9 @@ public class ApplicationErrorHandler {
         return out.toString(Charset.defaultCharset());
     }
 
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    @ExceptionHandler(SQLException.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(final SQLIntegrityConstraintViolationException e) {
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(final SQLException e) {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(List.of(getStackTrace(e)), e.getMessage(),
                 "Integrity constraint has been violated.", HttpStatus.CONFLICT, LocalDateTime.now()));
