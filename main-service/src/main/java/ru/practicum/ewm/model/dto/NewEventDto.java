@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.ewm.utility.MinEventDate;
 
 import javax.validation.constraints.Min;
@@ -32,7 +31,6 @@ public class NewEventDto {
     @NotNull
     @MinEventDate(2)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private LocationDto location;
     private Boolean paid;
