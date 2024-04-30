@@ -53,7 +53,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             " from Request r " +
             " where r.id in :requestIds and r.event.id = :eventId " +
             " and r.event.initiator.id = :userId " +
-            " group by r.event.participantLimit, r.event.requestModeration, r.status " )
+            " group by r.event.participantLimit, r.event.requestModeration, r.status ")
     Optional<List<EventRequestsStatDto>> findEventRequestsInfo(@Param("requestIds") List<Long> requestIds,
                                                          @Param("userId") Long userId,
                                                          @Param("eventId") Long eventId);

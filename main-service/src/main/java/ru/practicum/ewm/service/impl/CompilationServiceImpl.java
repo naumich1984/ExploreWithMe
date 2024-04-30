@@ -72,8 +72,8 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation currentCompilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException("Compilation with id=" + compId + " was not found"));
 
-        Compilation compilation = compilationRepository.saveAndFlush(CompilationMapper.
-                toCompilationFromUpdateCompilationRequest(updateCompilationRequest, currentCompilation));
+        Compilation compilation = compilationRepository.saveAndFlush(CompilationMapper
+                .toCompilationFromUpdateCompilationRequest(updateCompilationRequest, currentCompilation));
 
         List<Event> events = List.of();
         Optional<List<Long>> newEventIdsO = Optional.ofNullable(updateCompilationRequest.getEvents());
@@ -119,7 +119,7 @@ public class CompilationServiceImpl implements CompilationService {
         List<Compilation> compilations = compilationRepository.findAllByPinned(pinned, commonPageRequest);
 
         List<CompilationDto> results = new ArrayList<>(List.of());
-        for(Compilation compilation : compilations) {
+        for (Compilation compilation : compilations) {
             List<Long> eventIds = compilationRepository.findAllEventIdsByCompilationId(compilation.getId()).orElse(List.of());
 
             List<EventShortFlatDto> eventShortFlatDtos = eventRepository.findAllEventsByIds(eventIds).orElse(List.of());

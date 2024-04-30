@@ -26,7 +26,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " from Request as r right join r.event as e " +
             " where e.initiator.id = :userId " +
             " group by e.annotation, e.category, e.eventDate, e.id, e.initiator, e.paid, e.title, e.participantLimit " +
-            " order by e.eventDate desc " )
+            " order by e.eventDate desc ")
     List<EventShortFlatDto> findAllEventsWithRequestsCountByInitiatorId(@Param("userId") long userId, Pageable pageable);
 
     @Query(" select new ru.practicum.ewm.model.dto.EventFullFlatDto(e.annotation, " +
@@ -41,7 +41,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " where  e.initiator.id = :userId and e.id = :eventId " +
             " group by e.annotation, e.category, e.createdOn, e.description, e.eventDate, e.id, e.initiator," +
             " e.lat, e.lon, e.paid, e.participantLimit, e.publishedOn, e.requestModeration, e.state, e.title" +
-            " order by e.eventDate desc " )
+            " order by e.eventDate desc ")
     Optional<EventFullFlatDto> findEventByIdAndUserIdWithRequestCount(@Param("userId") Long userId,
                                                                       @Param("eventId") Long eventId);
 
@@ -51,7 +51,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " r.event.id, r.event.state, r.event.participantLimit, r.event.requestModeration " +
             " from Request r " +
             " where r.id in :requestIds and r.event.id = :eventId " +
-            " and r.requester.id = :userId and r.status = 'PENDING' " )
+            " and r.requester.id = :userId and r.status = 'PENDING' ")
     Optional<List<EventRequestsConfirmDto>> findEventRequestsInfoForConfirmation(@Param("requestIds") List<Long> requestIds,
                                                                                  @Param("userId") Long userId,
                                                                                  @Param("eventId") Long eventId);
@@ -74,7 +74,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " group by e.annotation, e.category.id, e.category.name, e.createdOn, e.description, e.eventDate, e.id, " +
             " e.initiator.id, e.initiator.name, " +
             " e.lat, e.lon, e.paid, e.participantLimit, e.publishedOn, e.requestModeration, e.state, e.title" +
-            " order by e.eventDate desc " )
+            " order by e.eventDate desc ")
     List<EventFullFlatDto> findEventsByFilter(@Param("users") @Nullable List<Long> users,
                                               @Param("states") @Nullable List<EventState> states,
                                               @Param("categories") @Nullable List<Long> categories,
@@ -97,7 +97,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " and e.state = 'PUBLISHED' " +
             " group by e.annotation, e.category.id, e.category.name, e.eventDate, e.id, " +
             " e.initiator.id, e.initiator.name, e.paid, e.title, e.participantLimit " +
-            " order by e.eventDate desc " )
+            " order by e.eventDate desc ")
     List<EventShortFlatDto> findEventsByFilterPublic(@Param("text") @Nullable String text,
                              @Param("categories") @Nullable List<Long> categories,
                              @Param("paid") @Nullable Boolean paid,
@@ -116,7 +116,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " where e.id = :eventId and e.state = 'PUBLISHED' " +
             " group by e.annotation, e.category, e.createdOn, e.description, e.eventDate, e.id, e.initiator," +
             " e.lat, e.lon, e.paid, e.participantLimit, e.publishedOn, e.requestModeration, e.state, e.title" +
-            " order by e.eventDate desc " )
+            " order by e.eventDate desc ")
     Optional<EventFullFlatDto> findEventByIdWithRequestCount(@Param("eventId") Long eventId);
 
 
@@ -128,6 +128,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             " from Request as r right join r.event as e " +
             " where e.id in :ids " +
             " group by e.annotation, e.category, e.eventDate, e.id, e.initiator, e.paid, e.title, e.participantLimit " +
-            " order by e.eventDate desc " )
+            " order by e.eventDate desc ")
     Optional<List<EventShortFlatDto>> findAllEventsByIds(@Param("ids") List<Long> ids);
 }

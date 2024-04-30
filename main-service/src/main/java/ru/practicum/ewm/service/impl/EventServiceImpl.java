@@ -221,7 +221,7 @@ public class EventServiceImpl implements EventService {
         boolean changeStatus = Optional.ofNullable(updateEventAdminRequest.getStateAction()).isPresent();
         if (changeStatus) {
             // событие можно отклонить, только если оно еще не опубликовано (Ожидается код ошибки 409)
-            if ( updateEventAdminRequest.getStateAction().equals(EventUpdateState.REJECT_EVENT)
+            if (updateEventAdminRequest.getStateAction().equals(EventUpdateState.REJECT_EVENT)
                     && event.getState().equals(EventState.PUBLISHED)) {
                 throw new ValidationException("Conflict");
             }
@@ -267,7 +267,7 @@ public class EventServiceImpl implements EventService {
         List<EventShortFlatDto> events = eventRepository.findEventsByFilterPublic(text, categories, paid, rangeStart, rangeEnd, pageable);
         statsInfo.addHits(statsDtoIn);
         List<EventShortFlatDto> eventsFiltered;
-        if(Optional.ofNullable(onlyAvailable).orElse(false)) {
+        if (Optional.ofNullable(onlyAvailable).orElse(false)) {
             eventsFiltered = events.stream()
                     .filter(e -> e.getParticipantLimit() > e.getConfirmedRequests() || e.getParticipantLimit() == 0)
                     .collect(Collectors.toList());
