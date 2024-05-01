@@ -12,6 +12,7 @@ import ru.practicum.ewm.model.request.UpdateEventAdminRequest;
 import ru.practicum.ewm.service.EventService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class EventControllerAdmin {
                                                                      @RequestParam(required = false) List<Long> categories,
                                                                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                                                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-                                                                     @RequestParam(required = false, defaultValue = "0") Integer from,
-                                                                     @RequestParam(required = false, defaultValue = "10") Integer size) {
+                                                                     @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                                                     @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         log.debug("GET /admin/events");
         log.debug(" | from: {}", from);
         log.debug(" | size: {}", size);

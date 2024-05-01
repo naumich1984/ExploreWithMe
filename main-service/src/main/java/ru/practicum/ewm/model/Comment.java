@@ -31,7 +31,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
-    private User event;
+    private Event event;
 
     @Column(name = "text")
     private String text;

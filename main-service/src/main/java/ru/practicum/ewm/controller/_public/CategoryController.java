@@ -12,6 +12,7 @@ import ru.practicum.ewm.model.dto.CategoryDto;
 import ru.practicum.ewm.model.mapper.CategoryMapper;
 import ru.practicum.ewm.service.CategoryService;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,8 +35,8 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<List<CategoryDto>> getAllCategoriesPublic(@RequestParam(required = false, defaultValue = "0") Integer from,
-                                                         @RequestParam(required = false, defaultValue = "10") Integer size) {
+    public ResponseEntity<List<CategoryDto>> getAllCategoriesPublic(@RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                                         @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         log.debug("GET /categories");
         log.debug(" | from: {}", from);
         log.debug(" | size: {}", size);

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.UserDto;
 import ru.practicum.ewm.model.mapper.UserMapper;
@@ -11,12 +12,14 @@ import ru.practicum.ewm.model.request.NewUserRequest;
 import ru.practicum.ewm.service.UserService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @Slf4j
 public class UserControllerAdmin {
 
@@ -34,8 +37,8 @@ public class UserControllerAdmin {
 
     @GetMapping("/admin/users")
     public ResponseEntity<List<UserDto>> getAllUsersAdmin(@RequestParam(required = false) List<Long> ids,
-                                                     @RequestParam(required = false, defaultValue = "0") Integer from,
-                                                     @RequestParam(required = false, defaultValue = "10") Integer size) {
+                                                     @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                                     @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         log.debug("GET /admin/users");
         log.debug(" | ids: {}", ids);
         log.debug(" | from: {}", from);
