@@ -1,4 +1,4 @@
-package ru.practicum.ewm.server.stats;
+package ru.practicum.ewm.server.stats.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.dto.stats.StatsDtoIn;
 import ru.practicum.ewm.dto.stats.StatsDtoOut;
+import ru.practicum.ewm.server.stats.model.StatsMapper;
+import ru.practicum.ewm.server.stats.repository.StatsRepository;
+import ru.practicum.ewm.server.stats.exception.BadRequestException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,17 +24,17 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     @Transactional
-    public Integer saveHits(StatsDtoIn statsDtoIn) {
+    public void saveHits(StatsDtoIn statsDtoIn) {
         log.debug("RUN saveHits");
-        Stats hit = StatsMapper.toStatsFromInDto(statsDtoIn);
-        statsRepository.save(hit);
-
-        return 1;
+        statsRepository.save(StatsMapper.toStatsFromInDto(statsDtoIn));
     }
 
     @Override
     public List<StatsDtoOut> getHits(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         log.debug("RUN getHits");
+        if (start.isAfter(end)) {
+            throw new BadRequestException("Start date must be early than end date!");
+        }
         List<StatsDtoOut> hits;
         if (Optional.ofNullable(unique).orElse(false)) {
             if (uris == null) {

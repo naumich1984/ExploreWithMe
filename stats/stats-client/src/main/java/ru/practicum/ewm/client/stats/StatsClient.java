@@ -9,6 +9,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.ewm.dto.stats.StatsDtoIn;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -25,14 +26,20 @@ public class StatsClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getHits(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Map<String, Object> parameters = Map.of(
-                "start", start,
-                "end", end,
-                "uris", uris,
+                "start", start.format(formatter),
+                "end", end.format(formatter),
                 "unique", unique
         );
 
-        return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
+        StringBuilder path = new StringBuilder("/stats?start={start}&end={end}");
+        for (String uri : uris) {
+            path.append("&uris=").append(uri);
+        }
+        path.append("&unique={unique}");
+
+        return get(path.toString(), parameters);
     }
 
     public ResponseEntity<Object> addHits(StatsDtoIn statsDtoIn) {

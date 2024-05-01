@@ -1,4 +1,4 @@
-package ru.practicum.ewm.server.stats;
+package ru.practicum.ewm.server.stats.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.stats.StatsDtoIn;
 import ru.practicum.ewm.dto.stats.StatsDtoOut;
+import ru.practicum.ewm.server.stats.service.StatsService;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -23,14 +24,15 @@ public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
-    public ResponseEntity<Integer> addHit(@RequestBody @Valid StatsDtoIn statsDtoIn) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addHit(@RequestBody @Valid StatsDtoIn statsDtoIn) {
         log.debug("POST /hit");
         log.debug(" | app:{}", statsDtoIn.getApp());
         log.debug(" | ip:{}", statsDtoIn.getIp());
         log.debug(" | uri:{}", statsDtoIn.getUri());
         log.debug(" | timestamp:{}", statsDtoIn.getTimestamp());
 
-        return new ResponseEntity<Integer>(statsService.saveHits(statsDtoIn), HttpStatus.CREATED);
+        statsService.saveHits(statsDtoIn);
     }
 
     @GetMapping("/stats")
