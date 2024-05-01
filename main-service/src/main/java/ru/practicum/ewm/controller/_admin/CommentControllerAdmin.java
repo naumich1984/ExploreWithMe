@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.model.dto.CommentDto;
-import ru.practicum.ewm.model.dto.NewCommentDto;
 import ru.practicum.ewm.service.CommentService;
-
-import javax.validation.Valid;
 
 @RestController
 @Validated
@@ -21,6 +18,7 @@ public class CommentControllerAdmin {
     private final CommentService commentService ;
 
     @DeleteMapping("/admin/comments/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCommentAdmin(@PathVariable Long commentId) {
         log.debug("DELETE /admin/comments/{commentId}");
         log.debug(" | commentId: {}", commentId);

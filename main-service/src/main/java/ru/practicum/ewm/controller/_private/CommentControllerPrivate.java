@@ -34,6 +34,7 @@ public class CommentControllerPrivate {
     }
 
     @DeleteMapping("/users/{userId}/comments/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCommentPrivate(@PathVariable Long userId, @PathVariable Long commentId) {
         log.debug("DELETE /users/{userId}/comments/{commentId}");
         log.debug(" | userId: {}", userId);

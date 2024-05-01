@@ -15,6 +15,7 @@ public class CommentMapper {
         return Comment.builder().text(newCommentDto.getText())
                 .event(Event.builder().id(eventId).build())
                 .author(User.builder().id(userId).build())
+                .created(null)
                 .build();
     }
 

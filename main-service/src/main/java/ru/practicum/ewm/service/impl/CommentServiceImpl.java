@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.BadRequestException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.model.Comment;
+import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.User;
+import ru.practicum.ewm.model._enum.EventState;
 import ru.practicum.ewm.model.dto.CommentDto;
 import ru.practicum.ewm.model.dto.CommentFlatDto;
 import ru.practicum.ewm.model.dto.NewCommentDto;
@@ -38,8 +40,11 @@ public class CommentServiceImpl implements CommentService {
         log.debug("RUN addCommentPrivate");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found"));
-        eventRepository.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
+        if (!event.getState().equals(EventState.PUBLISHED)) {
+            throw new BadRequestException("Only published events can be commented on!");
+        }
         Comment comment = commentRepository.save(CommentMapper.toComment(newCommentDto, userId, eventId));
 
         return CommentMapper.toCommentDto(comment, eventId, user);
