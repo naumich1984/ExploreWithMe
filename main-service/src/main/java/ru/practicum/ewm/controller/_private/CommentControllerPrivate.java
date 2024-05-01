@@ -18,7 +18,7 @@ import javax.validation.Valid;
 @Slf4j
 public class CommentControllerPrivate {
 
-    private final CommentService commentService ;
+    private final CommentService commentService;
 
     @PostMapping("/users/{userId}/events/{eventId}/comments")
     public ResponseEntity<CommentDto> addCommentPrivate(@RequestBody @Valid NewCommentDto newCommentDto,

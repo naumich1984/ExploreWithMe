@@ -15,7 +15,7 @@ import ru.practicum.ewm.service.CommentService;
 @Slf4j
 public class CommentControllerAdmin {
 
-    private final CommentService commentService ;
+    private final CommentService commentService;
 
     @DeleteMapping("/admin/comments/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
