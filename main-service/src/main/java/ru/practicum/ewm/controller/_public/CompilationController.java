@@ -24,8 +24,8 @@ public class CompilationController {
 
     @GetMapping("/compilations")
     public ResponseEntity<List<CompilationDto>> getCompilationPublic(@RequestParam(defaultValue = "false") Boolean pinned,
-                                                                     @RequestParam(defaultValue = "0") Integer from,
-                                                                     @RequestParam(defaultValue = "10") Integer size) {
+                                                                     @RequestParam(defaultValue = "0", required = false) Integer from,
+                                                                     @RequestParam(defaultValue = "10", required = false) Integer size) {
         log.debug("GET /compilations");
         log.debug(" | pinned: {}", pinned);
         log.debug(" | from: {}", from);

@@ -96,7 +96,7 @@ public class CompilationServiceImpl implements CompilationService {
                     compilationEventRepository.deleteAllByCompilationIdAndEventIdIn(compId, eventIdsToDel);
                 }
                 if (!eventIdsToAdd.isEmpty()) {
-                    compilationEvents = compilationEventRepository.saveAllAndFlush(CompilationMapper
+                    compilationEvents = compilationEventRepository.saveAll(CompilationMapper
                             .toCompilationEvent(compilation, eventIdsToAdd));
                 }
 

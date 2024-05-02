@@ -16,6 +16,7 @@ import ru.practicum.ewm.model.request.UpdateEventUserRequest;
 import ru.practicum.ewm.service.EventService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -38,8 +39,8 @@ public class EventControllerPrivate {
 
     @GetMapping("/users/{userId}/events")
     public ResponseEntity<List<EventShortDto>> getEventsPrivate(@PathVariable Long userId,
-                                                                @RequestParam(required = false, defaultValue = "0") Integer from,
-                                                                @RequestParam(required = false, defaultValue = "10") Integer size) {
+                                                                @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                                                @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         log.debug("GET /users/{userId}/events");
         log.debug(" | userId: {}", userId);
         log.debug(" | from: {}", from);

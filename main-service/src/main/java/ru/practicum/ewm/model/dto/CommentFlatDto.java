@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommentDto {
+public class CommentFlatDto {
 
     private Long id;
     private Long event;
@@ -20,6 +20,7 @@ public class CommentDto {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime changed;
-    private UserShortDto author;
+    private Long authorId;
+    private String authorName;
     private String text;
 }

@@ -1,6 +1,7 @@
 package ru.practicum.ewm.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class Comment {
     private Long id;
 
     @Column(name = "created")
+    @CreationTimestamp
     private LocalDateTime created;
 
     @Column(name = "changed")
@@ -31,7 +33,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
-    private User event;
+    private Event event;
 
     @Column(name = "text")
     private String text;
